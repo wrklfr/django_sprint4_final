@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Профиль пользователя {{ profile_user.username }}</h2>
+  <p>Имя: {{ profile_user.first_name }}</p>
+  <p>Фамилия: {{ profile_user.last_name }}</p>
+  <p>Email: {{ profile_user.email }}</p>
+  <p>Дата регистрации: {{ profile_user.date_joined }}</p>
+  {% if user == profile_user %}
+  <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-primary">Редактировать профиль</a>
+  <a href="{% url 'password_change' %}" class="btn btn-sm btn-outline-secondary">Изменить пароль</a>
+{% endif %}
+
+  <h3>Посты пользователя</h3>
+  {% for post in page_obj %}
+    <div>
+      <h4><a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a></h4>
+      <p>{{ post.text|truncatewords:30 }}</p>
+      <p>Опубликовано: {{ post.pub_date|date:"d E Y" }}</p>
+      {% if post.image %}
+        <img src="{{ post.image.url }}" alt="" style="max-width: 200px;">
+      {% endif %}
+      <hr>
+    </div>
+  {% empty %}
+    <p>У пользователя пока нет постов.</p>
+  {% endfor %}
+
+  {% include "includes/paginator.html" %}
+{% endblock %}
